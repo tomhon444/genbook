@@ -43,5 +43,6 @@ next-env.d.ts
 
 # Isolated legacy test runtime, synthetic credentials and database files
 /.local/
+/db/
 /test-results/
 /playwright-report/
