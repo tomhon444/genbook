@@ -1,0 +1,32 @@
+﻿[
+    {
+        "revision":  "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+        "path":  "skills/react-best-practices",
+        "name":  "vercel-react-best-practices",
+        "repo":  "vercel-labs/agent-skills"
+    },
+    {
+        "revision":  "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+        "path":  "skills/web-design-guidelines",
+        "name":  "web-design-guidelines",
+        "repo":  "vercel-labs/agent-skills"
+    },
+    {
+        "revision":  "672deb21e70e471e0536d5ad7a67c14b8359e97e",
+        "path":  ".agents/skills/next-best-practices",
+        "name":  "next-best-practices",
+        "repo":  "vercel-labs/openreview"
+    },
+    {
+        "revision":  "f6ed002d03084cb39c01d1d58904d47a36f5322a",
+        "path":  "skills/mysql",
+        "name":  "mysql",
+        "repo":  "planetscale/database-skills"
+    },
+    {
+        "revision":  "0b75b5835a87de1fdd202ba965f3bc5a27738fdf",
+        "path":  "playwright-best-practices",
+        "name":  "playwright-best-practices",
+        "repo":  "currents-dev/playwright-best-practices-skill"
+    }
+]
