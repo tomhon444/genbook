@@ -3,36 +3,19 @@ import { cookies } from 'next/headers';
 import { isRonaldoIdentityConfigured } from './ronaldo.mjs';
 
 export const SESSION_COOKIE = 'genbook_session';
-export type Identity = { staffId: string; displayName: string; departmentId: string; departmentName: string };
+export type Identity = { staffId: string; displayName: string; departmentId: string; departmentName: string; uniStaffId?: string | null };
 export type Session = { identity: Identity; expiresAt: number };
 
-// The synthetic provider is a separate process, never imported into the app bundle.
-export function isLocalIdentityEnabled() {
-  return process.env.NODE_ENV === 'development' && process.env.AUTH_PROVIDER === 'local'
-    && /^http:\/\/127\.0\.0\.1:\d+$/.test(process.env.LOCAL_IDENTITY_URL ?? '')
-    && (process.env.LOCAL_IDENTITY_SECRET?.length ?? 0) >= 32;
-}
-
 export function isIdentityEnabled() {
-  return isLocalIdentityEnabled() || (process.env.AUTH_PROVIDER === 'central'
-    && centralOrigin() !== null && isRonaldoIdentityConfigured());
+  return process.env.AUTH_PROVIDER === 'central'
+    && centralOrigin() !== null && isRonaldoIdentityConfigured();
 }
 
 export async function identityRequest(path: string, body: Record<string, unknown>) {
-  if (process.env.AUTH_PROVIDER === 'central') {
-    try {
-      const { handleCentralRequest } = await import('./ronaldo.mjs');
-      return await handleCentralRequest(path, body);
-    } catch { return null; }
-  }
-  if (!isLocalIdentityEnabled()) return null;
+  if (process.env.AUTH_PROVIDER !== 'central') return null;
   try {
-    return await fetch(`${process.env.LOCAL_IDENTITY_URL}${path}`, {
-      method: 'POST', cache: 'no-store', redirect: 'error',
-      signal: AbortSignal.timeout(3000),
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.LOCAL_IDENTITY_SECRET}` },
-      body: JSON.stringify(body),
-    });
+    const { handleCentralRequest } = await import('./ronaldo.mjs');
+    return await handleCentralRequest(path, body);
   } catch { return null; }
 }
 
@@ -47,18 +30,10 @@ export async function getSession(): Promise<Session | null> {
 
 export function isSameLocalOrigin(request: Request) {
   const origin = request.headers.get('origin');
-  if (process.env.AUTH_PROVIDER === 'central') {
-    const configured = centralOrigin();
-    return configured !== null && origin === configured.origin
-      && request.headers.get('host') === configured.host;
-  }
-  if (!origin || !isLocalIdentityEnabled()) return false;
-  const url = new URL(request.url);
-  // Next normalizes the internal URL hostname to localhost. Validate the browser's
-  // literal loopback Host and Origin against the bound port, never forwarded headers.
-  const host = `127.0.0.1${url.port ? `:${url.port}` : ''}`;
-  return url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)
-    && origin === `http://${host}` && request.headers.get('host') === host;
+  if (process.env.AUTH_PROVIDER !== 'central') return false;
+  const configured = centralOrigin();
+  return configured !== null && origin === configured.origin
+    && request.headers.get('host') === configured.host;
 }
 
 // Only an explicitly configured public origin controls CENTRAL requests and

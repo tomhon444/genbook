@@ -18,7 +18,7 @@
 
 `npm.cmd run dev:local` ครั้งถัดไปจะใช้ source จาก `.local/t12-persistent/legacy-78629b14/source.sql.gz` เมื่อมีไฟล์ หรือกำหนด `LOCAL_REFERENCE_SNAPSHOT` ให้ชี้ไฟล์ local ที่ต้องการได้ ถ้าไม่ได้กำหนดและไม่มีไฟล์ จะใช้ข้อมูลจำลองเดิม ถ้าระบุ source เองแต่ไฟล์ผิด/อ่านไม่ได้ ต้องหยุด ไม่แอบสลับ source
 
-เมื่อ runner สร้างฐานใหม่ จะเก็บ settings เฉพาะ preview ใน `.local/preview-database.json` แยกจากไฟล์ที่ชุดทดสอบอาจเขียนทับ สามารถเติม catalog ให้เว็บทดลองที่กำลังเปิดอยู่ด้วย `npm.cmd run dev:references` ได้ คำสั่งยอมรับเฉพาะ loopback port3315, user t05_app, schema t05_synthetic และ gate open ที่ไม่มีประวัติย้าย/เลขกันไว้เท่านั้น ไม่รับ remote URL หรือฐาน actual preservation
+เมื่อ runner สร้างฐานใหม่ จะเก็บ settings เฉพาะ preview ใน `.local/preview-database.json` แยกจากไฟล์ที่ชุดทดสอบอาจเขียนทับ สามารถเติม catalog ให้เว็บทดลองที่กำลังเปิดอยู่ด้วย `npm.cmd run dev:references` ได้ คำสั่งยอมรับเฉพาะ loopback port 3315, user `genbook_test_app`, schema `genbook_test` และ gate open ที่ไม่มีประวัติย้าย/เลขกันไว้เท่านั้น ไม่รับ remote URL หรือฐาน actual preservation
 
 อัปเดต catalog ใน transaction เดียวโดย share-lock gate และให้ update ตารางที่มีสิทธิ์อยู่แล้ว ไม่เพิ่มสิทธิ์เปิด gate ปิดรายการจำลองเก่าแต่ไม่ลบเอกสาร/ตัวนับ และไม่ seed จากเลขประวัติจริง grants ทดลองที่เปิดให้มีเฉพาะ LOCAL-001 ไม่ใช่สิทธิ์บุคลากรจริง เก็บ catalog/ผลนำเข้าใน `.local/legacy-reference-preview.json` ซึ่ง Git ไม่ติดตาม
 

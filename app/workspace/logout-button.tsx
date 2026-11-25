@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { CButton, CSpinner } from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import { cilAccountLogout } from "@coreui/icons";
 import { PopupAlert } from "@/app/components/popup-alert";
 
 export function LogoutButton({ expiresAt }: { expiresAt: number }) {
@@ -28,5 +30,5 @@ export function LogoutButton({ expiresAt }: { expiresAt: number }) {
     } catch { setError("เชื่อมต่อระบบไม่ได้ กรุณาลองออกจากระบบอีกครั้ง"); }
     finally { setPending(false); }
   }
-  return <div className="logout-control"><CButton color="secondary" variant="outline" onClick={logout} disabled={pending}>{pending ? <><CSpinner size="sm" aria-hidden="true" /> กำลังออกจากระบบ…</> : "ออกจากระบบ"}</CButton>{error && <PopupAlert color="danger" role="alert" onClose={() => setError("")}>{error}</PopupAlert>}</div>;
+  return <div className="logout-control"><CButton color="danger" variant="outline" size="sm" onClick={logout} disabled={pending} aria-label={pending ? undefined : "ออกจากระบบ"} title="ออกจากระบบ">{pending ? <><CSpinner size="sm" aria-hidden="true" /> กำลังออกจากระบบ…</> : <><CIcon icon={cilAccountLogout} size="sm" aria-hidden="true" /><span className="d-none d-sm-inline">ออกจากระบบ</span></>}</CButton>{error && <PopupAlert color="danger" role="alert" onClose={() => setError("")}>{error}</PopupAlert>}</div>;
 }

@@ -1,18 +1,17 @@
 "use client";
 
-import Link from 'next/link';
+import { Breadcrumbs } from '@/app/components/breadcrumbs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import { CButton } from '@coreui/react';
-import type { detail } from '@/lib/issuance/service';
-import type { historyDetail } from '@/lib/issuance/history';
+import type { BookDocument, HistoricalDocument } from '@/lib/genbookno/types';
 import { AuditTrail, type AuditEntry } from '../audit-trail';
 import { DocumentEditor } from '../document-editor';
-import { PdfDownload } from '../pdf-download';
+import { PdfAttachment } from '../pdf-attachment';
 import './document-page.css';
 
-type Modern = Awaited<ReturnType<typeof detail>> & { audit?: AuditEntry[] };
-type Historical = Awaited<ReturnType<typeof historyDetail>>;
+type Modern = BookDocument & { audit?: AuditEntry[] };
+type Historical = HistoricalDocument;
 type Document = Modern | Historical;
 const original = (text: string | null) => text === null ? 'ไม่ทราบ' : text === '' ? 'ไม่ระบุ' : text;
 
@@ -51,13 +50,13 @@ export function DocumentPage({ kind, id, snapshot, ownerId, returnTo }: {
   const legacy = document && 'sourceId' in document ? document : null;
   const modern = document && !('sourceId' in document) ? document : null;
   return <section className={'document-record-page'} aria-labelledby="document-page-heading" aria-busy={pending}>
-    <Link href={returnTo} className={'document-record-back'} prefetch={false}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h13" /></svg>กลับหน้ารายการ</Link>
+    <Breadcrumbs backHref={returnTo} items={[{ label: 'ค้นหาหนังสือ', href: returnTo }, { label: document?.number ?? 'รายละเอียดหนังสือ' }]} />
     {!document && <h1 id="document-page-heading" className={'document-record-loadingHeading'}>รายละเอียดหนังสือ</h1>}
     {pending && <div className={'document-record-feedback'} role="status">กำลังโหลดรายละเอียดหนังสือ…</div>}
     {error && <div className={'document-record-feedback'} role="alert"><h2>ไม่สามารถเปิดรายละเอียดได้</h2><p>{error}</p><CButton type="button" color="primary" onClick={() => setRetry(value => value + 1)}>ลองใหม่</CButton></div>}
     {document && <article className={'document-record-paper'} role="region" aria-label={legacy ? 'รายละเอียดประวัติหนังสือ' : 'รายละเอียดจากผลค้นหา'}>
       <header className={'document-record-header'}>
-        <div className={'document-record-badges'}><span>{legacy ? 'ประวัติจากระบบเดิม · อ่านอย่างเดียว' : 'หนังสือจากระบบใหม่'}</span><span className={document.confidential ? 'document-record-private' : undefined}>{document.confidential ? 'ลับ' : 'ไม่ลับ'}</span>{legacy?.cancelled && <span className={'document-record-private'}>ยกเลิก</span>}</div>
+        <div className={'document-record-badges'}><span className="x-pill x-pill-neutral">{legacy ? 'ประวัติจากระบบเดิม · อ่านอย่างเดียว' : 'หนังสือจากระบบใหม่'}</span><span className={`x-pill ${document.confidential ? 'x-pill-brand' : 'x-pill-ok'}`}><span className="x-pill-dot" />{document.confidential ? 'ลับ' : 'ไม่ลับ'}</span>{legacy?.cancelled && <span className="x-pill x-pill-stop"><span className="x-pill-dot" />ยกเลิก</span>}</div>
         <h1 id="document-page-heading">{document.number}</h1>
         <p className={'document-record-subject'}>{document.subject}</p>
       </header>
@@ -73,7 +72,7 @@ export function DocumentPage({ kind, id, snapshot, ownerId, returnTo }: {
         {modern && <section className={'document-record-section'} aria-labelledby="document-delivery"><h2 id="document-delivery">ผู้รับและปลายทาง</h2><dl className={'document-record-fields'}><Field label="ผู้รับ" wide>{modern.recipient || 'ไม่ระบุ'}</Field><Field label="หน่วยงานรับเรื่อง">{modern.externalOrganization || modern.recipientDepartments.map(department => department.name).join(', ') || 'ไม่ระบุ'}</Field><Field label="ผู้ลงนาม">{modern.signer || 'ไม่ระบุ'}</Field></dl></section>}
         {legacy && <HistoricalInformation document={legacy} />}
         <section className={'document-record-section'} aria-labelledby="document-attachments"><h2 id="document-attachments">ไฟล์แนบ</h2>
-          {modern ? <p>{modern.hasPdf ? <PdfDownload id={modern.id} /> : modern.confidential ? 'หนังสือลับ · ยกเว้น PDF' : 'รอแนบ PDF'}</p> : <p>{legacy?.confidential ? 'หนังสือลับ · ยกเว้น PDF' : legacy?.pdfPending ? 'ยังไม่มี PDF ที่ตรวจรับแล้ว' : 'ยังไม่ได้ยืนยันไฟล์เดิม'} · ยังไม่ได้ตรวจย้ายไฟล์แนบเดิม</p>}
+          {modern ? <>{!modern.hasPdf && <p>{modern.confidential ? 'หนังสือลับ · ยกเว้น PDF' : 'รอแนบ PDF'}</p>}<PdfAttachment key={`${modern.id}:${modern.version}`} id={modern.id} version={modern.version} owner={modern.ownerId === ownerId && !modern.cancelled} hasPdf={modern.hasPdf} onSaved={async () => { setRetry(value => value + 1); }} /></> : <p>{legacy?.confidential ? 'หนังสือลับ · ยกเว้น PDF' : legacy?.pdfPending ? 'ยังไม่มี PDF ที่ตรวจรับแล้ว' : 'ยังไม่ได้ยืนยันไฟล์เดิม'} · ยังไม่ได้ตรวจย้ายไฟล์แนบเดิม</p>}
         </section>
         {modern && <>
           {'audit' in modern && modern.audit && <AuditTrail entries={modern.audit} />}

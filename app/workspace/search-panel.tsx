@@ -3,22 +3,26 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import type { SearchDocument, SearchSort } from './search-grid';
 import { CButton, CForm, CFormInput } from '@coreui/react';
 import { PopupAlert } from '@/app/components/popup-alert';
 import { SearchFilters, type AdvancedFilters } from './search-filters';
 import { SearchPagination } from './search-pagination';
-import { WorkspaceIcon } from './workspace-icon';
-import { emptySearch, readSearchState, searchStateUrl, type SearchState } from './search-state';
+import CIcon from '@coreui/icons-react';
+import { cilInbox, cilSearch } from '@coreui/icons';
+import { emptySearch, readSearchState, scopePrefix, searchStateUrl, type SearchScope, type SearchState } from './search-state';
+import { SearchLoading } from './search-loading';
 
-const SearchGrid = dynamic(() => import('./search-grid'), { ssr: false, loading: () => <p role="status">กำลังเตรียมตาราง…</p> });
+const SearchGrid = dynamic(() => import('./search-grid'), { ssr: false, loading: () => <SearchLoading label="กำลังเตรียมตาราง…" /> });
 
 type ResultDocument = SearchDocument;
 type Results = { documents: ResultDocument[]; total: number; page: number; pageSize?: number; hasMore: boolean; types: string[]; years: number[] };
 const initial = emptySearch;
 
-export function SearchPanel({ initialState }: { initialState: SearchState }) {
+type Props = { scope: SearchScope; title: string; description: string; initialState: SearchState };
+
+export function SearchPanel({ scope, title, description, initialState }: Props) {
+  const prefix = scopePrefix[scope], headingId = `search-heading-${scope}`;
   const router = useRouter();
   const [filters, setFilters] = useState(initialState.filters);
   const [queryDraft, setQueryDraft] = useState(initialState.filters.q);
@@ -33,7 +37,7 @@ export function SearchPanel({ initialState }: { initialState: SearchState }) {
   const active = useRef<AbortController | null>(null);
   function cancel() { generation.current++; active.current?.abort(); active.current = null; }
   useEffect(() => {
-    const state = readSearchState(new URLSearchParams(window.location.search));
+    const state = readSearchState(new URLSearchParams(window.location.search), prefix);
     void search(state.page, state.filters, state.ordering, state.pageSize);
     return cancel;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -54,8 +58,8 @@ export function SearchPanel({ initialState }: { initialState: SearchState }) {
     const controller = new AbortController(), requestId = generation.current;
     active.current = controller;
     setPending(true); setError(''); setResult(null);
-    window.history.replaceState(null, '', searchStateUrl({ filters: criteria, page, pageSize: size, ordering: sort }));
-    const params = new URLSearchParams({ page: String(page), pageSize: String(size), ...sort });
+    window.history.replaceState(null, '', searchStateUrl({ filters: criteria, page, pageSize: size, ordering: sort }, prefix, new URLSearchParams(window.location.search)));
+    const params = new URLSearchParams({ scope, page: String(page), pageSize: String(size), ...sort });
     for (const [key, value] of Object.entries(criteria)) if (value.trim()) params.set(key, value.trim());
     try { const data: Results = await read(`/api/search?${params}`, controller.signal); if (requestId === generation.current) { setResult(data); setTypes(data.types); setYears(data.years ?? []); } }
     catch (error) { if (requestId === generation.current && !controller.signal.aborted) failure(error); }
@@ -70,27 +74,29 @@ export function SearchPanel({ initialState }: { initialState: SearchState }) {
   function submit(event: FormEvent) { event.preventDefault(); const criteria = { ...filters, q: queryDraft }; setFilters(criteria); void search(1, criteria); }
   function apply(advanced: AdvancedFilters) { const criteria = { ...advanced, q: queryDraft }; setFilters(criteria); void search(1, criteria); }
   function clear() { setFilters(initial); setQueryDraft(''); void search(1, initial); }
-  return <section className="search-section search-workspace" aria-labelledby="search-heading" aria-busy={pending}>
-    <div className="search-page-heading">
-      <div>
-        <h1 id="search-heading">ค้นหาหนังสือตามสิทธิ์</h1>
-        <p>รวมหนังสือจากระบบเดิมและระบบใหม่ · ปีเลข พ.ศ. · กดหัวคอลัมน์เพื่อเรียงผลค้นหาทั้งหมด</p>
+  const filtered = Object.values(filters).some(Boolean);
+  // Rendered inside a home tab panel: the tab carries the title, the head shows the scope note.
+  return <section className="search-section search-workspace" aria-label={title} aria-busy={pending}>
+    <div className="x-grid">
+      <div className="x-grid-head">
+        <p className="search-scope-note" id={headingId}>{description}</p>
+        <div className="x-toolbar search-command-bar">
+          <CForm onSubmit={submit} className="x-search search-query-form"><CButton type="submit" className="search-query-submit" aria-label="ค้นหาหนังสือ" disabled={pending}><CIcon icon={cilSearch} size="sm" aria-hidden="true" /></CButton><CFormInput id={`search-q-${scope}`} aria-label="เลขหนังสือหรือชื่อเรื่อง" type="search" maxLength={200} placeholder="ค้นหาเลขหนังสือหรือชื่อเรื่อง…" value={queryDraft} onChange={event => setQueryDraft(event.target.value)} /></CForm>
+          <SearchFilters applied={filters} years={years} types={types} onApply={apply} onClear={clear} />
+        </div>
       </div>
-      <Link href="/workspace/issuance" prefetch={false} className="btn btn-primary search-issue-action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>ออกเลขหนังสือ</Link>
+      {pending && <SearchLoading label="กำลังโหลดรายการหนังสือ…" rows={Math.min(pageSize, 6)} />}
+      {error && <PopupAlert color="danger" role="alert" onClose={() => setError('')}>{error}</PopupAlert>}
+      {result && !result.documents.length && <div className="x-grid-empty search-result-status" aria-live="polite">
+        <CIcon icon={cilInbox} size="xxl" className="mb-2" aria-hidden="true" />
+        <p className="x-grid-empty-t">ไม่พบหนังสือที่คุณอ่านได้ในหน้านี้</p>
+        <p className="x-grid-empty-h">{filtered ? 'ลองเปลี่ยนคำค้นหรือล้างตัวกรอง' : (scope === 'mine' ? 'คุณยังไม่เคยออกเลขหนังสือ' : 'ฝ่ายของคุณยังไม่มีเลขหนังสือที่คุณอ่านได้')}</p>
+        {filtered && <CButton type="button" color="secondary" variant="outline" size="sm" onClick={clear}>ล้างตัวกรอง</CButton>}
+      </div>}
+      <div className="search-results-surface" hidden={!result?.documents.length}>
+        <SearchGrid documents={result?.documents ?? []} pending={pending} ordering={ordering} onOpen={open} onSort={next => { setOrdering(next); void search(1, filters, next); }} />
+      </div>
+      {result && <SearchPagination total={result.total} page={result.page} pageSize={result.pageSize ?? pageSize} count={result.documents.length} pending={pending} onPage={page => void search(page)} onSize={size => { setPageSize(size); void search(1, filters, ordering, size); }} />}
     </div>
-    <div className="search-command-bar">
-      <CForm onSubmit={submit} className="search-query-form"><CButton type="submit" className="search-query-submit" aria-label="ค้นหาหนังสือ" disabled={pending}><WorkspaceIcon name="search" /></CButton><CFormInput id="search-q" aria-label="เลขหนังสือหรือชื่อเรื่อง" type="search" maxLength={200} placeholder="ค้นหาเลขหนังสือหรือชื่อเรื่อง…" value={queryDraft} onChange={event => setQueryDraft(event.target.value)} /></CForm>
-      <SearchFilters applied={filters} years={years} types={types} onApply={apply} onClear={clear} />
-    </div>
-    {pending && <p role="status">กำลังโหลดผลค้นหา…</p>}
-    {error && <PopupAlert color="danger" role="alert" onClose={() => setError('')}>{error}</PopupAlert>}
-    {result && <div className="search-result-status" aria-live="polite">
-      {!result.documents.length && <p>ไม่พบหนังสือที่คุณอ่านได้ในหน้านี้</p>}
-    </div>}
-    <div className="search-results-surface" hidden={!result?.documents.length}>
-      <SearchGrid documents={result?.documents ?? []} pending={pending} ordering={ordering} onOpen={open} onSort={next => { setOrdering(next); void search(1, filters, next); }} />
-    </div>
-    {result && <SearchPagination total={result.total} page={result.page} pageSize={result.pageSize ?? pageSize} count={result.documents.length} pending={pending} onPage={page => void search(page)} onSize={size => { setPageSize(size); void search(1, filters, ordering, size); }} />}
-
   </section>;
 }

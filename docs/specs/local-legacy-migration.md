@@ -16,7 +16,7 @@
 npm.cmd run migration:rehearse -- C:/Users/dench/Desktop/GenBookno_DB.sql.gz
 ```
 
-เครื่องมืออ่าน gzip และ parse SQL literals โดยไม่ execute SQL จาก dump สร้าง MySQL ใหม่บน loopback พอร์ต 3319 ภายใต้ `.local/t05-mysql/` นำข้อมูลเข้า `legacy_staging` ใน transaction ตรวจทุกแถว/ทุกฟิลด์เทียบต้นทาง และนำเข้าซ้ำเพื่อตรวจ idempotency ปิดและลบฐานข้อมูลเฉพาะ instance ที่สร้างหลังจบ เก็บรายงาน aggregate ที่ `.local/t12/rehearsal.json` ซึ่ง gitignore แล้ว ไม่มีเนื้อหาหนังสือหรือชื่อบุคคลใน repository
+เครื่องมืออ่าน gzip และ parse SQL literals โดยไม่ execute SQL จาก dump สร้าง MySQL ใหม่บน loopback พอร์ต 3319 ภายใต้ `.local/test-mysql/` นำข้อมูลเข้า `legacy_staging` ใน transaction ตรวจทุกแถว/ทุกฟิลด์เทียบต้นทาง และนำเข้าซ้ำเพื่อตรวจ idempotency ปิดและลบฐานข้อมูลเฉพาะ instance ที่สร้างหลังจบ เก็บรายงาน aggregate ที่ `.local/t12/rehearsal.json` ซึ่ง gitignore แล้ว ไม่มีเนื้อหาหนังสือหรือชื่อบุคคลใน repository
 
 | ตาราง | แถวที่กระทบยอดผ่าน |
 |---|---:|

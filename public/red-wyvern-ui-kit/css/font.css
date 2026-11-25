@@ -1,0 +1,82 @@
+/*!
+ * font.css — Sarabun
+ * ---------------------------------------------------------------------------
+ * Sarabun (SIL Open Font License, see fonts/Sarabun/OFL.txt) is the system's
+ * one typeface. It carries both Thai and Latin, so mixed strings — a Thai label
+ * next to a room code or a Buddhist-era year — share a single design and sit on
+ * one baseline, which is where the previous setup came apart.
+ *
+ * The old declarations gave each weight its own family name
+ * (THSarabunNew, THSarabunNew_Bold, ThaiSansNeue, ThaiSansLite), so the browser
+ * could not resolve `font-weight: bold` and synthesised a faux bold instead of
+ * using the real cut. Here it is one family across the weight range, the way
+ * @font-face is meant to be used: ask for `font-weight: 600` and you get
+ * Sarabun SemiBold.
+ *
+ * font-display: swap so Thai text paints in a fallback immediately rather than
+ * leaving the page blank while ~85KB per weight arrives.
+ */
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-Italic.ttf') format('truetype');
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-SemiBold.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-BoldItalic.ttf') format('truetype');
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sarabun';
+	src: url('../fonts/Sarabun/Sarabun-ExtraBold.ttf') format('truetype');
+	font-weight: 800;
+	font-style: normal;
+	font-display: swap;
+}

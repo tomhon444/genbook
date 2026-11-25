@@ -1,14 +1,14 @@
-import type { historyDetail } from '@/lib/issuance/history';
+import type { HistoricalDocument } from '@/lib/genbookno/types';
 
 const originalText = (value: string | null) => value === null ? 'ไม่ทราบ' : value === '' ? 'ไม่ระบุ' : value;
 
-export function HistoricalDetail({ document }: { document: Awaited<ReturnType<typeof historyDetail>> }) {
-  return <div className="document-detail" role="region" aria-label="รายละเอียดประวัติหนังสือ"><p className="eyebrow">ประวัติจากระบบเดิม · อ่านอย่างเดียว</p><h3>{document.number}</h3><dl>
+export function HistoricalDetail({ document }: { document: HistoricalDocument }) {
+  return <div className="document-detail historical-detail" role="region" aria-label="รายละเอียดประวัติหนังสือ"><p className="eyebrow">ประวัติจากระบบเดิม · อ่านอย่างเดียว</p><h3>{document.number}</h3><dl>
       <div><dt>รหัสรายการเดิม</dt><dd>{document.sourceId}</dd></div>
       <div><dt>เรื่อง</dt><dd className="preserve-lines">{document.subject}</dd></div>
       <div><dt>วันที่หนังสือ / ปีเลข</dt><dd>{document.documentDate} / {document.numberYear}</dd></div>
       <div><dt>ผู้ขอ / หน่วยงาน ณ วันออก</dt><dd>{document.ownerId} / {document.ownerDepartmentId}</dd></div>
-      <div><dt>สถานะเดิม</dt><dd>{document.cancelled ? 'ยกเลิก' : 'ปกติ'} · {document.confidential ? 'ลับ' : 'ไม่ลับ'}</dd></div>
+      <div><dt>สถานะเดิม</dt><dd><span className={`x-pill ${document.cancelled ? 'x-pill-stop' : 'x-pill-ok'}`}><span className="x-pill-dot" />{document.cancelled ? 'ยกเลิก' : 'ปกติ'}</span> <span className={`x-pill ${document.confidential ? 'x-pill-brand' : 'x-pill-neutral'}`}>{document.confidential ? 'ลับ' : 'ไม่ลับ'}</span></dd></div>
       <div><dt>การเผยแพร่</dt><dd>{document.published ? 'เผยแพร่ภายในคณะ' : 'ไม่เผยแพร่'}{document.confidential ? ' · ความลับจำกัดให้เฉพาะเจ้าของอ่าน' : ''}</dd></div>
       <div><dt>สถานะไฟล์แนบ</dt><dd>{document.confidential ? 'หนังสือลับ · ยกเว้น PDF' : document.pdfPending ? 'ยังไม่มี PDF ที่ตรวจรับแล้ว' : 'ยังไม่ได้ยืนยันไฟล์เดิม'} · ยังไม่ได้ตรวจย้ายไฟล์แนบเดิม</dd></div>
       {document.details && <>

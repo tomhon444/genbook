@@ -6,7 +6,7 @@ import { CButton, CForm, CFormInput, CFormLabel } from '@coreui/react';
 import { PopupAlert } from '@/app/components/popup-alert';
 import { HistoricalDetail } from './historical-detail';
 
-type HistoricalDocument = Awaited<ReturnType<typeof import('@/lib/issuance/history').historyDetail>>;
+type HistoricalDocument = import('@/lib/genbookno/types').HistoricalDocument;
 export function HistoryPanel() {
   const router = useRouter();
   const [query,setQuery] = useState('');
@@ -59,7 +59,7 @@ export function HistoryPanel() {
     <p className="eyebrow">คลังข้อมูลเดิม</p><h2 id="history-heading">ประวัติหนังสือเดิม</h2><p>ค้นรายการที่ผ่านการตรวจรับข้อมูลแล้ว ตามสิทธิ์ของคุณ</p>
     <CForm onSubmit={submit}><CFormLabel htmlFor="history-query">เรื่อง เลขหนังสือ หรือรหัสรายการเดิม</CFormLabel><CFormInput id="history-query" maxLength={200} value={query} onChange={event => { cancel(); setQuery(event.target.value); setResult(null); setSelected(null); setError(''); setPending(false); }} /><CButton type="submit" color="primary" disabled={pending}>ค้นประวัติ</CButton></CForm>
     {pending && <p role="status">กำลังค้นข้อมูล…</p>}{error && <PopupAlert color="danger" role="alert" onClose={() => setError('')}>{error}</PopupAlert>}
-    {result && <div aria-live="polite">{result.documents.length ? <ul className="document-list">{result.documents.map(document => <li key={`${document.sourceSha256}:${document.sourceId}`}><button type="button" disabled={pending} onClick={() => open(document)}><strong>{document.number} · ปี {document.numberYear}</strong><span>{document.subject}</span><small>รหัสเดิม {document.sourceId} · {document.cancelled ? 'ยกเลิก' : 'ปกติ'}</small></button></li>)}</ul> : <p>ไม่พบประวัติที่คุณอ่านได้</p>}<CButton disabled={pending || result.page === 1} onClick={() => search(result.page-1)}>หน้าก่อน</CButton><span> หน้า {result.page} </span><CButton disabled={pending || !result.hasMore} onClick={() => search(result.page+1)}>หน้าถัดไป</CButton></div>}
+    {result && <div aria-live="polite">{result.documents.length ? <ul className="document-list">{result.documents.map(document => <li key={`${document.sourceSha256}:${document.sourceId}`}><button type="button" disabled={pending} onClick={() => open(document)}><strong>{document.number} · ปี {document.numberYear}</strong><span>{document.subject}</span><small>รหัสเดิม {document.sourceId} <span className={`x-pill ${document.cancelled ? 'x-pill-stop' : 'x-pill-ok'}`}><span className="x-pill-dot" />{document.cancelled ? 'ยกเลิก' : 'ปกติ'}</span></small></button></li>)}</ul> : <p>ไม่พบประวัติที่คุณอ่านได้</p>}<CButton color="secondary" variant="outline" disabled={pending || result.page === 1} onClick={() => search(result.page-1)}>หน้าก่อน</CButton><span> หน้า {result.page} </span><CButton color="secondary" variant="outline" disabled={pending || !result.hasMore} onClick={() => search(result.page+1)}>หน้าถัดไป</CButton></div>}
     {selected && <HistoricalDetail document={selected} />}
   </section>;
 }

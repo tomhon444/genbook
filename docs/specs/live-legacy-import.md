@@ -52,11 +52,11 @@ DDL สำหรับฐานนำเข้า local อยู่ `tools/migr
 
 ## ฐาน local ถาวร
 
-ตรวจแล้วแอปเดิมใช้ `t05_synthetic` บน 3315 ไม่ใช่ genbook_db พอร์ต 3306 เป็น MySQL 5.6.51 ที่ไม่รองรับ JSON schema รุ่นปัจจุบัน การสร้างเริ่มต้นไว้ 6 ตารางยังไม่มีข้อมูล และไม่ถูกนำมาใช้โดยแอป/ไม่ถูกลบทิ้งอัตโนมัติ
+(บันทึกเดิม — ปัจจุบันแอปใช้ `genbook_db` บน 3306 เพียงฐานเดียว และยกเลิก `t05_synthetic` แล้ว) ตรวจแล้วแอปเดิมใช้ `t05_synthetic` บน 3315 ไม่ใช่ genbook_db พอร์ต 3306 เป็น MySQL 5.6.51 ที่ไม่รองรับ JSON schema รุ่นปัจจุบัน การสร้างเริ่มต้นไว้ 6 ตารางยังไม่มีข้อมูล และไม่ถูกนำมาใช้โดยแอป/ไม่ถูกลบทิ้งอัตโนมัติ
 
 ใช้ MySQL 8.0.30 ที่ติดตั้งอยู่แล้วใน runtime แยก `127.0.0.1:3338/genbook_db` โดยไม่อัปเกรด/แทนบริการที่ 3306 ข้อมูลอยู่ `.local/t12-persistent/genbook-db/data/` และ receipt ฝั่งแอปอยู่ `.local/genbook-local8.json` (มี credential local ต้องไม่เข้า Git)
 
-`tools/migration/managed-local.mjs` ตรวจ runtime UUID/พอร์ต/ชื่อฐานและ gate ก่อนผูก connection เป็นปลายทางที่อนุมัติใน `local-target.mjs` ฐานชื่อเหมือนกันหรือ marker ไม่ตรงไม่ทำให้ผ่านการตรวจ การซ้อม `t05_synthetic` เดิมยังคงข้อจำกัดเดิม ไม่ปลดล็อกฐานอื่นที่ 3306
+`tools/migration/managed-local.mjs` ตรวจ runtime UUID/พอร์ต/ชื่อฐานและ gate ก่อนผูก connection เป็นปลายทางที่อนุมัติใน `local-target.mjs` ฐานชื่อเหมือนกันหรือ marker ไม่ตรงไม่ทำให้ผ่านการตรวจ ฐานซ้อม `genbook_test` (เดิมชื่อ `t05_synthetic`) ยังคงข้อจำกัดเดิม ไม่ปลดล็อกฐานอื่นที่ 3306
 
 `import-local-files.mjs <snapshot.sql.gz> <private-archive>` ทำ preservation dry-run/commit/replay และนำไฟล์ที่ตรวจ bytes/hash แล้วเข้า LONGBLOB ด้วย association ครบ source IDs จากนั้น shutdown/reopen และตรวจ SHA จาก bytes ใน DB อีกครั้ง ไม่มีการเปิด issuance gate หรือเพิ่ม grants จากการนำเข้า
 

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { requireWorkspaceSession } from '@/app/workspace/session';
 import { DocumentPage } from '../../document-page';
 
-export const metadata: Metadata = { title: 'รายละเอียดหนังสือ | ระบบสารบรรณ' };
+export const metadata: Metadata = { title: 'รายละเอียดหนังสือ | ระบบออกเลขหนังสือ' };
 
 type Props = {
   params: Promise<{ kind: string; id: string }>;
@@ -26,7 +26,7 @@ async function AuthenticatedDetail({ params, searchParams }: Props) {
   const snapshot = typeof query.snapshot === 'string' ? query.snapshot : '';
   if ((kind !== 'legacy' && kind !== 'issuance') ||
       (kind === 'legacy' && (!/^\d{1,64}$/.test(id) || !/^[a-f0-9]{64}$/.test(snapshot))) ||
-      (kind === 'issuance' && !/^[a-f0-9-]{36}$/.test(id))) notFound();
+      (kind === 'issuance' && !/^\d{1,11}$/.test(id))) notFound();
   return <DocumentPage key={`${identity.staffId}:${identity.departmentId}:${kind}:${snapshot}:${id}`} kind={kind} id={id} snapshot={snapshot} ownerId={identity.staffId} returnTo={safeReturn(query.returnTo)} />;
 }
 

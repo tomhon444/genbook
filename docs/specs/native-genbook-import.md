@@ -28,7 +28,9 @@ npm.cmd run migration:native -- C:/Users/dench/Desktop/GenBookno_DB.sql.gz
 
 ฐานที่ 3306 เป็น MySQL 5.6 เดิมและไม่ได้ใช้สำหรับการนำเข้านี้ MySQL 8 ที่ 3338 ใช้ runtime ถาวรของโปรเจกต์ (`npm.cmd run dev:ronaldo` เปิด runtime ให้) ถ้าปิด runtime ไว้ต้องเปิดก่อนตรวจฐาน
 
-## การเชื่อม ronaldo-service
+## การเชื่อม ronaldo-service (ประวัติ — ยกเลิกแล้ว)
+
+> 24 พฤศจิกายน 2026: ยกเลิกฐาน `genbookno_db` และลบโมดูล `src/modules/genbookno/` ออกจาก ronaldo-service แล้ว ข้อมูลหนังสือทั้งหมดอยู่ใน `genbook_db` (127.0.0.1:3306) ที่ Next.js อ่าน/เขียนเอง ronaldo-service ใช้เฉพาะ Core identity ตรวจ `CENTRAL.STAFF_INFO` เนื้อหาด้านล่างเป็นบันทึกเดิม
 
 โมดูล `src/modules/genbookno/` ใช้ `GENBOOKNO_DATABASE_URL` ชี้ local clone ด้วยบัญชี SELECT-only แยกจาก root ข้อมูลเชื่อมต่อจริงอยู่ใน `.env` ที่ Git ignore ไม่อยู่ในเอกสารนี้
 

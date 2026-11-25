@@ -57,6 +57,7 @@ T01: เสร็จ 6/6 และ QA ผ่านเมื่อ 12 พฤศ�
 | T11 | [ยกเลิกหนังสือตามสิทธิ์ (มีเงื่อนไข)](./11-cancellation.md) | 7/10 | ไม่ดำเนินการ — ไม่รวมรุ่นแรก | — | 1/5 (คัดกรองขอบเขต) | [#12](https://github.com/tomhon444/genbook/issues/12) CLOSED — not planned |
 | T12 | [นำข้อมูลเดิมเข้าและตรวจความต่อเนื่อง](./12-legacy-migration.md) | 9/10 | กำลังทำ — AC4 ข้อมูลจริง/HTTP/หน้าอ่าน/เลขต่อผ่าน; รอ AC2/cutover | [T05](./Done-05-normal-issuance.md) | 5/6 | [#13](https://github.com/tomhon444/genbook/issues/13) |
 | T13 | [เชื่อมบัญชีคณะและตรวจรับก่อนเปิดใช้งานจริง](./13-faculty-identity-release-gate.md) | 7/10 | พร้อมเริ่ม — เงื่อนไขก่อนเปิดจริง | [T04](./Done-04-sign-in.md) รุ่น local | 0/6 | [#14](https://github.com/tomhon444/genbook/issues/14) |
+| T14 | [ย้ายการติดต่อฐานข้อมูลไปไว้ที่โมดูล genbookno ของ ronaldo-service](./14-genbookno-data-api.md) | 8/10 | รอเริ่ม | [T13](./13-faculty-identity-release-gate.md) ส่วน login | 0/7 | ยังไม่สร้าง |
 
 ## ลำดับการทำงาน
 

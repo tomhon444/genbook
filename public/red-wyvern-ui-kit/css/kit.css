@@ -1,0 +1,409 @@
+/* =========================================================================
+   Red Wyvern UI Kit — house tokens + custom components (Web)
+   Load order: font.css -> coreui-theme.min.css -> kit.css
+   ========================================================================= */
+
+:root {
+  /* ---- Brand (follows the compiled CoreUI palette) ---- */
+  --x-brand: var(--cui-primary);              /* #b33939 */
+  --x-brand-ink: var(--cui-primary-text-emphasis);
+  --x-brand-wash: var(--cui-primary-bg-subtle);
+  --x-accent: #ffd479;                        /* ON the red only, never on white */
+
+  /* ---- Surfaces & ink ---- */
+  --x-canvas: #f1f4f6;
+  --x-surface: #ffffff;
+  --x-surface-sunk: #f5f8fa;
+  --x-line: #dde5ea;
+  --x-line-strong: #c3ced7;
+  --x-ink: #16202c;
+  --x-ink-soft: #516070;
+
+  /* ---- Shape ---- */
+  --x-radius: 10px;
+  --x-radius-sm: 7px;
+  --x-radius-lg: 14px;
+  --x-radius-pill: 999px;
+
+  /* ---- Elevation ---- */
+  --x-shadow-0: none;
+  --x-shadow: 0 1px 2px rgba(16, 32, 48, .06), 0 1px 3px rgba(16, 32, 48, .04);
+  --x-shadow-card: 0 1px 3px rgba(16, 32, 48, .07), 0 4px 12px rgba(16, 32, 48, .05);
+  --x-shadow-pop: 0 8px 24px rgba(16, 32, 48, .14);
+  --x-shadow-modal: 0 16px 48px rgba(16, 32, 48, .22);
+
+  /* ---- Spacing (4px base) ---- */
+  --x-sp-1: 4px;  --x-sp-2: 8px;  --x-sp-3: 12px; --x-sp-4: 16px;
+  --x-sp-5: 20px; --x-sp-6: 24px; --x-sp-8: 32px; --x-sp-10: 40px; --x-sp-12: 48px;
+  --x-gap: 24px;
+
+  /* ---- Layout ---- */
+  --x-rail-w: 16rem;
+  --x-rail-w-mini: 4rem;
+  --x-topbar-h: 56px;
+  --x-crumbrow-h: 45px;
+  --x-container: 1320px;
+
+  /* ---- Status semantics ---- */
+  --x-status-done: var(--cui-success);
+  --x-status-open: var(--cui-warning);
+  --x-status-failed: var(--cui-danger);
+}
+
+/* =========================================================================
+   Breadcrumb bar
+   Markup:
+   <div class="x-crumbs-bar">
+     <button class="x-crumbs-back">[icon] ย้อนกลับ</button>
+     <span class="x-crumbs-sep-v"></span>
+     <nav aria-label="breadcrumb"><ol class="x-crumbs">
+       <li><a class="x-crumb" href="/">[home] หน้าแรก</a></li>
+       <li><span class="x-crumb-sep">›</span><a class="x-crumb" href="…">…</a></li>
+       <li><span class="x-crumb-sep">›</span><span class="x-crumb x-crumb-current" aria-current="page">…</span></li>
+     </ol></nav>
+   </div>
+   ========================================================================= */
+.x-crumbs-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; min-width: 0; }
+.x-crumbs-back {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; padding: 0 14px 0 10px; border-radius: 999px;
+  border: 1px solid var(--cui-primary); background: var(--cui-primary); color: #fff;
+  font-size: .875rem; font-weight: 500; line-height: 1; white-space: nowrap; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.x-crumbs-back:hover {
+  background: color-mix(in srgb, var(--cui-primary) 85%, #000);
+  border-color: color-mix(in srgb, var(--cui-primary) 85%, #000); color: #fff;
+}
+.x-crumbs-back:focus-visible { outline: 2px solid var(--cui-primary); outline-offset: 2px; }
+.x-crumbs-back .icon { flex: none; }
+.x-crumbs-sep-v { flex: none; width: 1px; height: 20px; background: var(--cui-border-color, #dfe3e8); }
+.x-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .8125rem; }
+.x-crumbs li { display: inline-flex; align-items: center; gap: 6px; }
+.x-crumb { display: inline-flex; align-items: center; gap: 4px; color: var(--cui-secondary-color, #6b7280); text-decoration: none; }
+a.x-crumb:hover { color: var(--cui-primary); text-decoration: underline; }
+.x-crumb-current { color: var(--cui-body-color, #222); font-weight: 600; }
+.x-crumb-sep { color: var(--cui-secondary-color, #9ca3af); }
+
+/* =========================================================================
+   Status pill
+   ========================================================================= */
+.x-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  border-radius: var(--x-radius-pill); font-size: .8rem; font-weight: 600; line-height: 1.5; white-space: nowrap;
+}
+.x-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.x-pill-ok      { background: #e4f6ea; color: #17803a; }
+.x-pill-warn    { background: #fff1de; color: #b45f06; }
+.x-pill-stop    { background: #fde8e8; color: #c62828; }
+.x-pill-info    { background: #e3f0fb; color: #1b6aa5; }
+.x-pill-neutral { background: #eceff1; color: #55636f; }
+.x-pill-brand   { background: var(--cui-primary-bg-subtle); color: var(--cui-primary-text-emphasis); }
+
+/* =========================================================================
+   Data grid card
+   AG Grid itself is themed in JS: see web/assets/js/grid-theme.js
+   ========================================================================= */
+.x-grid { background: #fff; border: 1px solid var(--x-line); border-radius: 12px; box-shadow: var(--x-shadow); overflow: hidden; margin-bottom: 24px; }
+.x-grid-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 12px 20px; border-bottom: 1px solid var(--x-line);
+}
+.x-grid-count { color: var(--x-ink-soft); font-size: .9rem; }
+.x-grid-count b { color: var(--x-ink); font-weight: 600; }
+.x-grid .ag-row.x-row-link { cursor: pointer; }
+.x-grid .x-row-action-cell { justify-content: center; }
+.x-grid .ag-cell { display: flex; align-items: center; }
+.x-grid .ag-cell-wrapper { width: 100%; }
+.x-grid .ag-right-aligned-cell { justify-content: flex-end; } /* flex cell ignores text-align → type: 'rightAligned' */
+.x-grid .ag-header { border-bottom: 1px solid var(--x-line); }
+.x-grid .ag-header-cell-text { font-size: .8rem; }
+.x-grid .ag-paging-panel { display: none; }           /* replaced by .x-listfoot */
+.x-grid-empty { text-align: center; padding: 40px 16px 44px; color: var(--x-ink-soft); }
+.x-grid-empty-t { font-weight: 600; color: var(--x-ink); margin-bottom: 4px; }
+.x-grid-empty-h { font-size: .9rem; margin-bottom: 12px; }
+
+/* Footer + pager */
+.x-listfoot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 14px 20px; border-top: 1px solid var(--x-line); font-size: .875rem; color: var(--x-ink-soft);
+}
+.x-listfoot-info { margin-right: auto; }
+.x-listfoot-size { display: inline-flex; align-items: center; gap: 6px; }
+.x-listfoot-size .form-select { width: auto; height: 36px; padding-block: 0; border-color: var(--x-line-strong); border-radius: 8px; }
+.x-pager { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.x-pager-btn {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding-inline: 10px;
+  border: 1px solid var(--x-line-strong); border-radius: 8px; background: #fff; color: var(--x-ink);
+  font-size: .875rem; font-weight: 500; text-decoration: none; cursor: pointer;
+}
+.x-pager-btn:hover:not(.is-disabled):not(.is-active) { border-color: var(--cui-primary); color: var(--cui-primary); }
+.x-pager-btn.is-active { background: var(--cui-primary); border-color: var(--cui-primary); color: #fff; }
+.x-pager-btn.is-disabled { background: var(--x-surface-sunk); border-color: var(--x-line); color: #a3afb9; cursor: default; }
+.x-pager-gap { padding-inline: 4px; color: var(--x-ink-soft); }
+
+/* Toolbar above a grid */
+.x-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.x-search { position: relative; }
+.x-search .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--x-ink-soft); }
+.x-search .form-control { padding-left: 34px; height: 36px; min-width: 240px; }
+
+/* Card */
+.x-card { background: #fff; border: 1px solid var(--x-line); border-radius: var(--x-radius); box-shadow: var(--x-shadow); }
+
+/* =========================================================================
+   Login / sign-in
+   CoreUI login layout: .card-group of form card (white) + brand panel (red).
+   Two variants share every class:
+     - PSU Passport (OpenID Connect): one <a class="btn x-auth-sso"> button
+     - Username / password: .input-group fields + <button class="btn x-auth-sso">
+   .x-auth goes on <body> (server-rendered layout) or on <main> (React page).
+   ========================================================================= */
+.x-auth {
+  --x-psu-navy: #003c71;
+  min-height: 100vh; display: flex; align-items: center; padding: var(--x-gap) 0;
+  background-color: var(--x-canvas);
+  background-image:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(179, 57, 57, .10), transparent 60%),
+    radial-gradient(48rem 34rem at 100% 100%, rgba(24, 124, 169, .09), transparent 62%);
+  background-attachment: fixed;
+}
+.x-auth-stage { width: 100%; }
+.x-auth-col { max-width: 1000px; }
+.x-auth-card { display: flex; border-radius: var(--x-radius-lg); overflow: hidden; box-shadow: var(--x-shadow-pop); }
+.x-auth-card > .card { margin-bottom: 0; border: 0; border-radius: 0; }
+.x-auth-card > .x-auth-form { flex: 1 1 54%; background-color: #fff; }
+.x-auth-card > .x-auth-brand { flex: 1 1 46%; background-color: var(--cui-primary); }
+.x-auth-form .card-body { padding: 40px 28px; }
+
+.x-auth-mark { display: block; width: 100%; max-width: 270px; height: auto; margin: 0 auto; }
+.x-auth-accent { display: block; width: 48px; height: 3px; margin: 32px auto 30px; border-radius: 2px; background-color: var(--cui-primary); }
+.x-auth-heading { margin-bottom: 8px; font-size: 32px; font-weight: 700; }
+.x-auth-sub { margin-bottom: 32px; color: var(--x-ink-soft); font-size: 15px; line-height: 1.6; }
+
+/* fields (username/password variant) */
+.x-auth-form .input-group-text { background-color: var(--x-surface-sunk); border-color: var(--x-line-strong); color: #8b98a6; }
+.x-auth-form .form-control { padding-top: 11px; padding-bottom: 11px; border-color: var(--x-line-strong); }
+.x-auth-form .input-group:focus-within .input-group-text { border-color: var(--cui-primary); color: var(--cui-primary); }
+
+/* submit / SSO button — PSU navy, the colour of the wordmark (not the red) */
+.x-auth-sso, .x-auth-submit {
+  padding-top: 13px; padding-bottom: 13px; border: 0; border-radius: var(--x-radius);
+  background-color: var(--x-psu-navy, #003c71); box-shadow: 0 8px 20px rgba(0, 60, 113, .18);
+  color: #fff; font-weight: 600;
+}
+.x-auth-sso:hover, .x-auth-sso:focus-visible, .x-auth-sso:active, .x-auth-sso:disabled,
+.x-auth-submit:hover, .x-auth-submit:focus-visible, .x-auth-submit:active, .x-auth-submit:disabled {
+  background-color: #002d56; color: #fff;
+}
+.x-auth-hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 18px 0 0; color: var(--x-ink-soft); font-size: 13px; }
+
+/* "หรือ" divider when a page offers both ways in */
+.x-auth-or { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: var(--x-ink-soft); font-size: 13px; }
+.x-auth-or::before, .x-auth-or::after { content: ""; flex: 1; height: 1px; background: var(--x-line); }
+
+/* notice under the form (e.g. an open submission window) */
+.x-auth-notice {
+  display: flex; gap: 10px; margin-top: 24px; padding: 12px 14px;
+  border: 1px solid var(--cui-info-border-subtle, var(--x-line)); border-radius: var(--x-radius);
+  background-color: var(--cui-info-bg-subtle); color: var(--cui-info-text-emphasis); font-size: 14px; line-height: 1.5;
+}
+.x-auth-notice-icon { flex: 0 0 auto; margin-top: 3px; }
+
+/* brand panel */
+.x-auth-logo { width: 100px; height: 100px; border-radius: 24px; box-shadow: 0 0 0 8px rgba(255, 255, 255, .14); }
+.x-auth-name { margin: 24px 0 6px; color: #fff; font-size: 26px; font-weight: 700; }
+.x-auth-faculty { color: rgba(255, 255, 255, .88); font-size: 15px; line-height: 1.6; }
+.x-auth-rule { width: 56px; margin: 22px auto; border-top: 1px solid rgba(255, 255, 255, .45); opacity: 1; }
+.x-auth-support { color: rgba(255, 255, 255, .9); font-size: 14px; line-height: 1.7; }
+.x-auth-tel { color: var(--x-accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 767.98px) {
+  .x-auth-card { flex-direction: column; }
+  .x-auth-card > .x-auth-form { flex: 0 0 auto; order: 2; }
+  .x-auth-card > .x-auth-brand { flex: 0 0 auto; order: 1; padding-top: 28px !important; padding-bottom: 28px !important; }
+  .x-auth-logo { width: 72px; height: 72px; border-radius: 17px; }
+  .x-auth-name { margin-top: 16px; font-size: 22px; }
+  .x-auth-rule, .x-auth-support { display: none; }
+}
+
+/* =========================================================================
+   Top-nav shell — for apps whose main menu has ≤ 3 pages
+   No .sidebar: the brand, the main menu and the account all sit in one red
+   bar. 4+ pages → use the .sidebar shell instead.
+   Markup:
+   <div class="wrapper d-flex flex-column min-vh-100 x-topnav-shell">
+     <header class="header header-sticky p-0 x-topnav">
+       <div class="container-fluid px-4">
+         <a class="x-bar-brand" href="/"><img class="x-bar-brand-mark" src="…/logo.svg" alt=""><span class="x-bar-brand-name">ชื่อระบบ</span></a>
+         <ul class="header-nav x-topnav-menu">
+           <li class="nav-item"><a class="nav-link active" aria-current="page" href="…">[icon] เมนู 1</a></li> …
+         </ul>
+         <ul class="header-nav ms-auto align-items-center">
+           <li class="nav-item x-account d-none d-md-flex">…</li>
+           <li class="nav-item ms-2"><a class="btn btn-sm btn-outline-danger" href="/logout">[icon] ออกจากระบบ</a></li>
+         </ul>
+       </div>
+     </header>
+     <div class="body flex-grow-1"><div class="container-xxl">…crumbs + page…</div></div>
+   </div>
+   ========================================================================= */
+.x-topnav-shell { background-color: var(--x-canvas); }
+.x-topnav-shell > .body { padding-top: var(--x-sp-5); padding-bottom: var(--x-sp-8); }
+
+.x-topnav {
+  --cui-header-bg: var(--x-brand);
+  --cui-header-color: rgba(255, 255, 255, .82);
+  --cui-header-hover-color: #fff;
+  --cui-header-active-color: #fff;
+  --cui-header-border-color: transparent;
+  --cui-header-min-height: var(--x-topbar-h);
+  color: #fff;
+  border-bottom: 0;
+  box-shadow: 0 1px 3px rgba(16, 32, 48, .25);
+}
+.x-topnav > .container-fluid { min-height: var(--x-topbar-h); gap: 0 var(--x-sp-2); }
+
+/* brand: logo mark + system name */
+.x-bar-brand {
+  display: inline-flex; align-items: center; gap: 10px; margin-inline-end: var(--x-sp-4);
+  color: #fff; font-size: 1.0625rem; font-weight: 700; text-decoration: none; white-space: nowrap;
+}
+.x-bar-brand:hover, .x-bar-brand:focus { color: #fff; }
+.x-bar-brand-mark { width: 34px; height: 34px; flex: none; object-fit: contain; }
+
+/* main menu: ≤ 3 links; active = white + accent bar along the bottom edge */
+.x-topnav-menu { align-self: stretch; gap: var(--x-sp-1); }
+.x-topnav-menu .nav-item { display: flex; }
+.x-topnav-menu .nav-link {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 var(--x-sp-3); font-weight: 500; white-space: nowrap;
+}
+.x-topnav-menu .nav-link:hover { background-color: rgba(255, 255, 255, .08); }
+.x-topnav-menu .nav-link.active { color: #fff; font-weight: 600; }
+.x-topnav-menu .nav-link.active::after {
+  content: ""; position: absolute; left: var(--x-sp-3); right: var(--x-sp-3); bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background-color: var(--x-accent);
+}
+.x-topnav-menu .nav-link:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+
+/* account on red */
+.x-account { display: flex; align-items: center; gap: 9px; padding-inline: 12px; border-inline-start: 1px solid rgba(255, 255, 255, .25); margin-inline-start: 4px; }
+.x-account-photo { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background-color: var(--x-surface-sunk); }
+.x-account-who { display: flex; flex-direction: column; line-height: 1.2; }
+.x-account-name { font-size: 15px; font-weight: 600; }
+/* department line: no job title in the bar · max 25 characters — cut + "..." when rendering (full name in title=""),
+   max-width/ellipsis is only a safety net (Thai glyphs are wider than 1ch → em) */
+.x-account-dept { font-size: 13.5px; opacity: .8; max-width: 18em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.x-account-name { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.x-topnav .x-account-name, .x-topnav .x-account-dept { color: #fff; }
+.x-topnav .x-account-photo { box-shadow: 0 0 0 2px rgba(255, 255, 255, .55); }
+
+/* sign-out: outline red is invisible on the red bar → solid white, red text */
+.x-topnav .btn-outline-danger {
+  --cui-btn-color: var(--x-brand-ink); --cui-btn-bg: #fff; --cui-btn-border-color: #fff;
+  --cui-btn-hover-color: var(--x-brand-ink); --cui-btn-hover-bg: var(--x-brand-wash); --cui-btn-hover-border-color: var(--x-brand-wash);
+  --cui-btn-active-color: var(--x-brand-ink); --cui-btn-active-bg: var(--x-brand-wash); --cui-btn-active-border-color: var(--x-brand-wash);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* below md: the menu drops to its own row under the brand, scrolls sideways */
+@media (max-width: 767.98px) {
+  .x-topnav > .container-fluid { flex-wrap: wrap; }
+  .x-topnav-menu {
+    order: 3; flex: 0 0 100%; flex-wrap: nowrap; overflow-x: auto; min-height: 44px;
+    border-top: 1px solid rgba(255, 255, 255, .18); scrollbar-width: none;
+  }
+  .x-topnav-menu::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 575.98px) { .x-bar-brand-name { display: none; } }
+
+/* =========================================================================
+   Sidebar shell — for apps whose main menu has 4+ pages
+   The left sidebar is ALWAYS the primary red (.x-sidebar). The white top
+   header (.x-appbar) ALWAYS shows the signed-in user: photo + name + department (no job title),
+   then the sign-out button. The main menu lives only in the sidebar.
+   Markup:
+   <div class="sidebar sidebar-fixed x-sidebar" id="sidebar">
+     <div class="sidebar-header"><a class="sidebar-brand x-bar-brand" href="/">[logo] <span class="x-bar-brand-name">ชื่อระบบ</span></a>
+       <button class="btn-close btn-close-white d-lg-none" type="button" aria-label="ปิดเมนู" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button></div>
+     <ul class="sidebar-nav">
+       <li class="nav-title">หมวด</li>
+       <li class="nav-item"><a class="nav-link active" aria-current="page" href="…">[svg.nav-icon] เมนู 1</a></li> …
+     </ul>
+     <div class="sidebar-footer d-none d-lg-flex"><button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button></div>
+   </div>
+   <div class="wrapper d-flex flex-column min-vh-100 x-sidebar-shell">
+     <header class="header header-sticky p-0 x-appbar">
+       <div class="container-fluid px-4">
+         <button class="header-toggler" type="button" aria-label="เมนู" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">[cilMenu]</button>
+         <ul class="header-nav ms-auto align-items-center">
+           <li class="nav-item x-account">
+             <img class="x-account-photo" src="{photo url}" alt="" onerror="this.src='…/img/user-placeholder.svg'">
+             <span class="x-account-who"><span class="x-account-name">ชื่อ นามสกุล</span><span class="x-account-dept d-none d-sm-block" title="{หน่วยงานเต็ม}">{หน่วยงาน: เกิน 25 ตัวอักษร → 25 ตัวแรก + ...}</span></span>
+           </li>
+           <li class="nav-item ms-2"><a class="btn btn-sm btn-outline-danger" href="/logout">[icon] ออกจากระบบ</a></li>
+         </ul>
+       </div>
+     </header>
+     <div class="body flex-grow-1"><div class="container-xxl">…crumbs + page…</div></div>
+   </div>
+   ========================================================================= */
+.sidebar.x-sidebar,
+.x-sidebar .sidebar-nav,
+.x-sidebar .sidebar-toggler {
+  --cui-sidebar-bg: var(--x-brand);
+  --cui-sidebar-color: #fff;
+  --cui-sidebar-brand-bg: transparent;
+  --cui-sidebar-brand-color: #fff;
+  --cui-sidebar-nav-title-color: rgba(255, 255, 255, .62);
+  --cui-sidebar-nav-link-color: rgba(255, 255, 255, .86);
+  --cui-sidebar-nav-link-icon-color: rgba(255, 255, 255, .72);
+  --cui-sidebar-nav-link-hover-color: #fff;
+  --cui-sidebar-nav-link-hover-bg: rgba(255, 255, 255, .10);
+  --cui-sidebar-nav-link-hover-icon-color: #fff;
+  --cui-sidebar-nav-link-active-color: #fff;
+  --cui-sidebar-nav-link-active-bg: rgba(0, 0, 0, .18);
+  --cui-sidebar-nav-link-active-icon-color: var(--x-accent);
+  --cui-sidebar-nav-link-disabled-color: rgba(255, 255, 255, .45);
+  --cui-sidebar-nav-group-bg: rgba(0, 0, 0, .08);
+  --cui-sidebar-nav-group-indicator-color: rgba(255, 255, 255, .72);
+  --cui-sidebar-nav-group-indicator-hover-color: #fff;
+  --cui-sidebar-nav-group-toggle-show-color: #fff;
+  --cui-sidebar-toggler-bg: rgba(0, 0, 0, .12);
+  --cui-sidebar-toggler-color: rgba(255, 255, 255, .72);
+  --cui-sidebar-toggler-hover-color: #fff;
+  --cui-sidebar-width: var(--x-rail-w);
+  --cui-sidebar-narrow-width: var(--x-rail-w-mini);
+}
+/* CoreUI re-declares the nav/toggler vars on .sidebar-nav / .sidebar-toggler, so they are overridden there too */
+.sidebar.x-sidebar { border: 0; box-shadow: 1px 0 3px rgba(16, 32, 48, .18); }
+.x-sidebar .sidebar-header { min-height: var(--x-topbar-h); padding-block: 0; border-bottom: 1px solid rgba(255, 255, 255, .18); }
+.x-sidebar .sidebar-brand.x-bar-brand { margin-inline-end: 0; min-width: 0; }
+.x-sidebar .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, .18); }
+.x-sidebar .sidebar-nav .nav-link { position: relative; font-weight: 500; }
+.x-sidebar .sidebar-nav .nav-link.active { font-weight: 600; }
+.x-sidebar .sidebar-nav .nav-link.active::before {
+  content: ""; position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 3px; border-radius: 0 3px 3px 0; background-color: var(--x-accent);
+}
+.x-sidebar .sidebar-nav .nav-link:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+.x-sidebar .nav-icon { width: 1.125rem; height: 1.125rem; }
+/* narrow (mini 4rem): hide the system name, keep the logo mark */
+.x-sidebar.sidebar-narrow-unfoldable:not(:hover) .x-bar-brand-name { display: none; }
+
+.x-sidebar-shell { background-color: var(--x-canvas); padding-inline-start: var(--cui-sidebar-occupy-start, 0); transition: padding .15s; }
+.x-sidebar-shell > .body { padding-top: var(--x-sp-5); padding-bottom: var(--x-sp-8); }
+
+/* white top header: menu toggler + signed-in user (photo, name, department) + sign-out */
+.x-appbar { --cui-header-min-height: var(--x-topbar-h); background-color: var(--x-surface); border-bottom: 1px solid var(--x-line); }
+.x-appbar > .container-fluid { min-height: var(--x-topbar-h); }
+.x-appbar .header-toggler { display: inline-flex; align-items: center; margin-inline-start: -8px; padding: 6px 8px; color: var(--x-ink-soft); border-radius: var(--x-radius-sm); }
+.x-appbar .header-toggler:hover { color: var(--x-ink); background-color: var(--x-surface-sunk); }
+.x-appbar .header-toggler .icon { width: 1.25rem; height: 1.25rem; }
+.x-appbar .x-account { border-inline-start: 0; }
+.x-appbar .x-account-photo { box-shadow: 0 0 0 2px var(--x-brand-wash); }
+.x-appbar .x-account-name { color: var(--x-ink); }
+.x-appbar .x-account-dept { color: var(--x-ink-soft); opacity: 1; }
+.x-appbar .btn-outline-danger { display: inline-flex; align-items: center; gap: 4px; }

@@ -17,6 +17,19 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - CoreUI for React
 - Follow installed dependency versions; do not upgrade without approval.
 
+## Architecture (required — read before changing data or auth code)
+
+```
+Client (genbook, Next.js) ──HTTP──> API service (ronaldo-service, module genbookno) ──> database (genbook_db)
+                          └─HTTP──> ronaldo-service Core identity ──> CENTRAL (read-only)
+```
+
+- genbook is the **client only**: UI, Route Handlers and server-side API clients. It must not open DB connections, import `mysql2`, or hold DB/CENTRAL credentials.
+- All reads/writes of book, numbering, amendment, history and PDF data go through the `genbookno` module in `F:/Work/project/ronaldo-service/src/modules/genbookno/` (`/api/v1/genbookno/*`). New data features are built there first, then called from genbook.
+- Username/password login uses ronaldo-service Core identity (`/api/v1/identity/authenticate`, `/status`), shared by every system. Do not implement login or CENTRAL access in genbook.
+- Service secrets stay server-side; never `NEXT_PUBLIC_`.
+- Book data lives in `genbookno_db` and is reached only via `lib/genbookno/client.ts` (`RONALDO_SERVICE_URL` + server-only `GENBOOKNO_API_SECRET`); see [T15](docs/tickets/15-genbookno-db-consolidation.md). Do not add direct DB code. Decision record: [ADR 0004](docs/adr/0004-client-api-database-layers.md).
+
 ## Domain rules
 - Inspect the existing system before proposing changes.
 - Never assume numbering rules. Confirm scope (department, document type, year basis, prefix, reset, cancellation).
@@ -62,3 +75,18 @@ See `docs/agents/issue-tracker.md`.
 
 Use a single-context layout: root `GLOSSARY.md` and `docs/adr/`.
 See `docs/agents/domain.md`.
+
+<!-- red-wyvern-ui-kit:start -->
+## UI — Red Wyvern UI Kit v0.5.0 (บังคับ)
+
+โปรเจคนี้ใช้ Theme และ Style จาก **Red Wyvern UI Kit** ที่ `node_modules/red-wyvern-ui-kit`
+ก่อนสร้างหรือแก้ UI ใดๆ ให้อ่าน `node_modules/red-wyvern-ui-kit/AGENTS.md` และทำตามกฎในนั้น
+
+- ฟอนต์: **TH Sarabun** ในรูปแบบ `'Sarabun'` จาก `public/red-wyvern-ui-kit/css/font.css` (family เดียว เลือกน้ำหนักด้วย font-weight)
+- Component: **CoreUI 5** (`@coreui/coreui` / `@coreui/react`) + class `.x-*` จาก `kit.css`
+- ตาราง: **ทุก section ใน Content ที่แสดงข้อมูลแบบตารางใช้ AG Grid Community 36** ใน `.x-grid` + `gridTheme()` ของ kit (รวมตารางเล็ก/สรุป) — ห้าม `<table>` / `.table` / `CTable` / DataTables
+- ไอคอน: **CoreUI Icons**
+- App shell: เมนูหลัก ≤ 3 หน้า → ไม่มี Left Sidebar ใช้ top-nav `.x-topnav` · มากกว่า 3 หน้า → Sidebar สี primary `.sidebar.x-sidebar` + header `.x-appbar` · แถบบนทั้งสองแบบแสดงรูป + ชื่อ + หน่วยงานผู้ login (`.x-account`) ไม่แสดงตำแหน่ง · หน่วยงาน ≤ 25 ตัวอักษร เกินให้ตัดแล้วต่อ `...`
+- สีหลัก `#b33939`, พื้นแอปเทา `#f1f4f6`, การ์ด/ตารางขาว
+- Assets ของ kit อยู่ที่ `public/red-wyvern-ui-kit` — เป็นสำเนาจาก kit ที่ `npx red-wyvern-ui-kit init` เขียนทับได้ทุกครั้ง จึงแก้ style ที่ repo ของ kit แล้วอัปเดตเวอร์ชัน
+<!-- red-wyvern-ui-kit:end -->

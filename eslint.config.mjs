@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored Red Wyvern UI Kit assets (copied by `npx red-wyvern-ui-kit init`).
+    "public/red-wyvern-ui-kit/**",
   ]),
 ]);
 

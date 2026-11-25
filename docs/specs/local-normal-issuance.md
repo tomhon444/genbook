@@ -4,9 +4,9 @@
 
 ## ทดลองใช้งาน
 
-ใช้ Node.js 24.16 ขึ้นไป และ MySQL 8.0 executable ที่ `C:/laragon/bin/mysql/mysql-8.0.30-winx64/bin/mysqld.exe` หรือกำหนด `T05_MYSQLD` ให้ชี้ executable จากนั้นรัน `npm.cmd run dev:local`
+ใช้ Node.js 24.16 ขึ้นไป และ MySQL 8.0 executable ที่ `C:/laragon/bin/mysql/mysql-8.0.30-winx64/bin/mysqld.exe` หรือกำหนด `GENBOOK_TEST_MYSQLD` ให้ชี้ executable จากนั้นรัน `npm.cmd run dev:local`
 
-Runner สร้าง MySQL แยกใหม่บน `127.0.0.1:3315` และบัญชีจำลองใน `.local/t04-account.json` เปิด `http://127.0.0.1:3000/login` แล้วขอเลขจากพื้นที่ส่วนตัวได้ หากพอร์ตถูกใช้จะหยุด ไม่เชื่อมฐานที่พอร์ตนั้นแทน ไม่มีการ import ฐานเดิมหรือใช้พอร์ต 3306
+Runner สร้าง MySQL ชั่วคราวบน `127.0.0.1:3315` (ฐาน `genbook_test`, settings ที่ `.local/test-database.json`) และบัญชีจำลองใน `.local/t04-account.json` เปิด `http://127.0.0.1:3000/login` แล้วขอเลขจากพื้นที่ส่วนตัวได้ หากพอร์ตถูกใช้จะหยุด ไม่เชื่อมฐานที่พอร์ตนั้นแทน ไม่มีการ import ฐานเดิมหรือใช้พอร์ต 3306
 
 ทุกครั้งที่เริ่ม runner เป็นข้อมูลทดสอบชุดใหม่ มีชุดเลขร่วม ชุดแยก และคำสั่งจำลอง พร้อม grants ของบัญชีตัวอย่าง ชุด `00047` พักไว้ ข้อมูลเหล่านี้ไม่ใช่ configuration เปิดระบบจริง รหัสผ่านสร้างใหม่และเก็บเฉพาะ `.local/` ที่ Git ไม่ติดตาม หยุด runner เมื่อเลิกใช้ ฐานสังเคราะห์เป็นข้อมูลชั่วคราว; log คงไว้สำหรับตรวจสอบ
 

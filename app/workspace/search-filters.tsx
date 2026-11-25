@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { CButton, CForm, CFormInput, CFormLabel, CFormSelect } from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilFilter, cilX } from '@coreui/icons';
 
 export type AdvancedFilters = { year: string; type: string; from: string; to: string; requester: string };
 
@@ -51,12 +53,12 @@ export function SearchFilters({ applied, years, types, onApply, onClear }: {
   function apply(event: FormEvent) { event.preventDefault(); onApply(draft); close(); }
 
   return <>
-    <CButton ref={trigger} type="button" className="search-filter-trigger" popoverTarget={id} aria-controls={id} aria-expanded={open} onClick={prepare}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" aria-hidden="true"><path d="M3 4h18l-7 8v7l-4 2v-9z" /></svg>
+    <CButton ref={trigger} type="button" className="search-filter-trigger" variant="outline" color="secondary" popoverTarget={id} aria-controls={id} aria-expanded={open} onClick={prepare}>
+      <CIcon icon={cilFilter} size="sm" aria-hidden="true" />
       ตัวกรอง{count > 0 && <span className="search-filter-count">{count}</span>}
     </CButton>
     <div ref={panel} id={id} popover="auto" className="search-filter-popover" role="dialog" aria-labelledby={`${id}-heading`} onToggle={event => setOpen(event.currentTarget.matches(':popover-open'))}>
-      <div className="search-filter-heading"><h2 id={`${id}-heading`}>ตัวกรองหนังสือ</h2><CButton type="button" className="filter-close" aria-label="ปิดตัวกรอง" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></CButton></div>
+      <div className="search-filter-heading"><h2 id={`${id}-heading`}>ตัวกรองหนังสือ</h2><CButton type="button" className="filter-close" aria-label="ปิดตัวกรอง" onClick={close}><CIcon icon={cilX} aria-hidden="true" /></CButton></div>
       <CForm onSubmit={apply}>
         <div className="form-field"><CFormLabel htmlFor={`${id}-year`}>ปีเลข (พ.ศ.)</CFormLabel><CFormSelect id={`${id}-year`} autoFocus value={draft.year} onChange={event => setDraft(current => ({ ...current, year: event.target.value }))}><option value="">ทุกปี</option>{draft.year && !years.includes(Number(draft.year)) && <option value={draft.year} disabled>{draft.year} (ไม่พบรายการที่อ่านได้)</option>}{years.map(year => <option key={year} value={String(year)}>{year}</option>)}</CFormSelect></div>
         <div className="form-field"><CFormLabel htmlFor={`${id}-type`}>ประเภทหนังสือ</CFormLabel><CFormSelect id={`${id}-type`} value={draft.type} onChange={event => setDraft(current => ({ ...current, type: event.target.value }))}><option value="">ทุกประเภท</option>{draft.type && !types.includes(draft.type) && <option value={draft.type} disabled>{draft.type} (ไม่พบรายการที่อ่านได้)</option>}{types.map(type => <option key={type} value={type}>{type}</option>)}</CFormSelect></div>

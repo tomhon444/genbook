@@ -50,7 +50,7 @@ Target references ประกอบด้วย 154 ชุดเลขและ
 3. Commit ในฐานซ้อม และเทียบ history/รายละเอียด/reference/counter floors กับแผนทุกฟิลด์
 4. Replay mapping/source เดิม ตรวจว่าข้อมูลครบและไม่สร้างซ้ำ
 5. ตรวจ gate เป็น `blocked`, grants ที่ active เป็นศูนย์ และชุดที่ map ยัง disabled
-6. ปิดฐานซ้อม ลบเฉพาะ datadir ที่ bootstrap สร้างไว้ภายใต้ `.local/t05-mysql/<id>/data` และตรวจพอร์ต 3332 ปิดแล้ว
+6. ปิดฐานซ้อม ลบเฉพาะ datadir ที่ bootstrap สร้างไว้ภายใต้ `.local/test-mysql/<id>/data` และตรวจพอร์ต 3332 ปิดแล้ว
 
 ## หลักฐานเฉพาะเครื่อง
 

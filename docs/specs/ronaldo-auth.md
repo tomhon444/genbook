@@ -23,7 +23,7 @@ Next.js `/api/me` และทุก protected operation → ตรวจ sessio
 
 รัน service แบบเต็มตามคู่มือ ronaldo-service หรือรันเฉพาะ identity ที่ build แล้ว (`node dist/core/identity/identity-server.js`) ตัวหลังไม่เปิด Repair/ฐาน Repair; bind loopback โดยตั้ง reverse proxy HTTPS เมื่อต้องเข้าจากเครื่องอื่น
 
-สำหรับพัฒนา genbook-no ให้ตั้ง `.env.local` แล้วใช้ `npm.cmd run dev:ronaldo` คำสั่งนี้เปิดฐานออกเลขสังเคราะห์ใหม่พอร์ต 3315 และ Next.js พอร์ต 3000; ไม่ใช้ฐานหนังสือจริงและไม่รัน migration บนฐานจริง หาก deploy ภายหลังให้กำหนดฐานหนังสือแยกเองตาม gate เดิม (runtime ออกเลขปัจจุบันยังจำกัด development)
+สำหรับพัฒนา genbook-no ให้ตั้ง `.env.local` แล้วใช้ `npm.cmd run dev:ronaldo` คำสั่งนี้ใช้ฐาน local ตัวเดียว `genbook_db` บน 127.0.0.1:3306 ตาม `ISSUANCE_DATABASE_URL` ใน `.env.local` (ถ้าชี้ที่อื่นจะหยุดทันที) และเปิด Next.js พอร์ต 3000; ไม่รัน migration ส่วน `dev:ronaldo:demo` สร้างฐานทดสอบชั่วคราว `genbook_test` แทน ronaldo-service ทำหน้าที่ตรวจ `LOGIN`/`PASSWORD` กับ `CENTRAL.STAFF_INFO` บน phoenix เท่านั้น ไม่มีการเชื่อมฐานหนังสือ (ยกเลิก `BOOK_DATA_PROVIDER=ronaldo` และโมดูล genbookno แล้วเมื่อ 24 พฤศจิกายน 2026)
 
 ## ทดลองเชื่อมสองโปรเจกต์โดยไม่ติดต่อ CENTRAL จริง
 
@@ -53,11 +53,11 @@ session คงอยู่ข้ามการเริ่ม Next.js ใหม
 
 รูปข้างชื่อผู้ใช้และปุ่มออกจากระบบใช้ `https://apis.eng.psu.ac.th/personnel/v1/photo/{user}.jpg` โดย `{user}` มาจาก `CENTRAL.STAFF_INFO.UNI_STAFF_ID` เท่านั้น ไม่ใช้ `STAFF_ID` หรือ username แทน
 
-Client เรียก `GET /api/profile` หลังแสดงหน้าแล้ว Route ตรวจ session และส่ง staffId ของ session ไปยัง `POST /api/v1/genbookno/profile` ด้วย service credential ฝั่งเซิร์ฟเวอร์ บริการตรวจตัวตนผ่าน StaffDirectory เดิมและคืน `{ uniStaffId: string | null }` โดยไม่อ่านฐานหนังสือและไม่แก้ Core identity contract การเรียกโดยไม่มี session คืน 401; ทุก response ใช้ `no-store`
+Core identity ของ ronaldo-service แนบ `uniStaffId` (จาก `STAFF_INFO.UNI_STAFF_ID` เฉพาะเมื่อมีค่า) ไปกับ identity ที่ตอบตอน login/status และ genbook เก็บไว้ใน session; client เรียก `GET /api/profile` หลังแสดงหน้า Route ตรวจ session แล้วคืน `{ uniStaffId: string | null }` จาก session โดยไม่เรียก service เพิ่ม การเรียกโดยไม่มี session คืน 401; ทุก response ใช้ `no-store`
 
 รูปโหลดโดยตรงจาก URL ที่กำหนดโดย encode รหัสเป็น path segment และไม่ส่ง referrer หากไม่มีรหัส รูปเสีย หรือบริการไม่พร้อม จะแสดงอักษรแรกของชื่อเดิมโดยไม่ขัดขวางการใช้งานระบบ โหมด local สังเคราะห์ไม่เรียก CENTRAL
 
-ตรวจด้วย `npm.cmd run test:auth:ronaldo` และ `npx.cmd playwright test tests/ronaldo-books.spec.mjs` ครอบคลุม URL, ตัวตนที่ยืนยันแล้ว, รูปเสีย, ไม่มีรหัส และบริการไม่พร้อม
+ตรวจด้วย `npm.cmd run test:auth:ronaldo` (validation ของ `uniStaffId` ใน identity) และเทสต์ Core identity ของ ronaldo-service
 
 
 

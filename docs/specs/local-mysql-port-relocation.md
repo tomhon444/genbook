@@ -2,6 +2,8 @@
 
 Superseded later on 19 November 2026: the owner requested **127.0.0.1:3306**. See [the current endpoint and rollback notes](local-mysql-port3306.md). The report below records the earlier 3338-to-3336 move.
 
+> **24 November 2026 — single local database.** genbook now uses only `genbook_db` on 127.0.0.1:3306. `genbookno_db`, `t05_synthetic`, Ronaldo's Genbookno module and `BOOK_DATA_PROVIDER=ronaldo` were removed; sign-in goes through ronaldo-service Core identity against CENTRAL `STAFF_INFO`. The sections below are historical records.
+
 19 พฤศจิกายน 2026 (Asia/Bangkok): ย้าย endpoint ของ MySQL 8.0.30 ตัว local จาก `127.0.0.1:3338` เป็น `127.0.0.1:3336` ตามคำขอเจ้าของ ใช้ data directory เดิม `.local/t12-persistent/genbook-db/data/` และคง server UUID เดิม ไม่มีการสร้างข้อมูลใหม่หรือรวมข้อมูลกับฐานอื่น
 
 | Database | Tables | Exact rows | Purpose |

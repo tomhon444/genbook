@@ -10,7 +10,7 @@ function display(value: unknown, field: string) {
   return value == null || value === '' ? '—' : String(value);
 }
 export function AuditTrail({ entries }: { entries: AuditEntry[] }) {
-  return <section className="audit-trail" aria-label="ประวัติของหนังสือ"><h4>ประวัติของหนังสือ</h4><ol>{entries.map((entry, index) => {
+  return <section className="audit-trail" aria-label="ประวัติของหนังสือ"><h4>ประวัติของหนังสือ</h4><ol className="audit-timeline">{entries.map((entry, index) => {
     const data = record(entry.details);
     const pdf = entry.event === 'pdf_attached' || entry.event === 'pdf_replaced';
     const before = pdf ? { sha256: data.previousSha256, bytes: data.previousBytes, version: data.previousVersion } : record(data.before);
